@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0; //watch out for version!
+
+//It is assumed that the contracting address will receive the entire supply.
+
+contract MyToken { // Two public string variables are defined. These variables represent the token's "name" and "symbol"
+    string public name;
+    string public symbol;
+    uint256 public totalSupply; // A public uint256 variable named "totalSupply" is defined. This variable represents the total token supply.
+    mapping(address => uint256) public balanceOf; // A mapping named "balanceOf" is defined. This is used to store the token balance of each address.
+
+    event Transfer(address indexed from, address indexed to, uint256 value); // I defined an event named "Transfer". This event is used to monitor token transfers. // "transfer" function performs the token transfer. It checks if the sender has sufficient funds, updates the balances, and issues a Transfer event.
+
+    constructor(string memory _name, string memory _symbol, uint256 _totalSupply) { // "constructor" function will run when the contract is created and will define the token's name, token, and total supply.
+        name = _name;
+        symbol = _symbol;
+        totalSupply = _totalSupply;
+        balanceOf[msg.sender] = _totalSupply;
+    }
+
+    function transfer(address _to, uint256 _value) external returns (bool) {
+        require(balanceOf[msg.sender] >= _value, "Insufficient balance");
+
+        balanceOf[msg.sender] -= _value;
+        balanceOf[_to] += _value;
+
+        emit Transfer(msg.sender, _to, _value);
+        return true;
+    }
+}
